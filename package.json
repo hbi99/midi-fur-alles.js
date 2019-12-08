@@ -1,0 +1,39 @@
+{
+  "name": "midi-fur-alles.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "midi-fur-alles.js",
+  "scripts": {
+    "minify": "gulp minify",
+    "test": "node test-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hbi99/midi-fur-alles.js.git"
+  },
+  "keywords": [
+    "midi",
+    "music",
+    "browser",
+    "javascript",
+    "web-audio",
+    "midi-files",
+    "player",
+    "webassembly"
+  ],
+  "author": "Hakan Bilgin",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/hbi99/midi-fur-alles.js/issues"
+  },
+  "homepage": "https://github.com/hbi99/midi-fur-alles.js#readme",
+  "devDependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "gulp": "^4.0.2",
+    "gulp-load-plugins": "^2.0.1",
+    "gulp-rename": "^2.0.0",
+    "gulp-size": "^3.0.0",
+    "gulp-uglify-es": "^2.0.0"
+  }
+}

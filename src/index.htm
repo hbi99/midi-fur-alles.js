@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>midi-fur-alles.js</title>
+<script src="midi-fur-alles.min.js"></script>
+</head>
+<body>
+
+<script>
+
+	var player;
+
+	function play(song) {
+		player = player || new MidiFurAlles();
+
+		// pause song - in case it is playing
+		player.pause();
+		player.load("songs/"+ song +".mid");
+		player.play();
+	}
+
+</script>
+
+<a href="javascript:play('The-Entertainer');">The Entertainer</a><br/>
+<a href="javascript:play('Tetris - ThemeA(Variation)');">Tetris</a><br/>
+<a href="javascript:play('AddamsFamily');">Adams Family</a><br/>
+<br/>
+<button onclick="player.play()">Play</button>
+<button onclick="player.pause()">Stop</button>
+
+</body>
+</html>
