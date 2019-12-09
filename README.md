@@ -22,6 +22,5 @@ $ git clone https://github.com/hbi99/midi-fur-alles.js.git
 $ cd midi-fur-alles.js
 $ npm install
 $ npm run test
-
-// and browse http://localhost:4100/index.htm
 ```
+...and browse http://localhost:4100/index.htm
