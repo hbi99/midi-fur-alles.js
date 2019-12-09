@@ -15,3 +15,13 @@ let player = new MidiFurAlles();
 player.load("The-Entertainer.mid");
 player.play();
 ```
+
+To test it locally:
+```
+$ git clone https://github.com/hbi99/midi-fur-alles.js.git
+$ cd midi-fur-alles.js
+$ npm install
+$ npm run test
+
+// and browse http://localhost:4100/index.htm
+```
