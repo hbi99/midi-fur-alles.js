@@ -1,5 +1,5 @@
 
-const MidiFurAlles = (() => {
+(function(window, module) {
   const observer = (() => {
     // private event stack
     const stack = {};
@@ -422,5 +422,10 @@ const MidiFurAlles = (() => {
     }
   }
 
-  return MidiFurAlles;
-})();
+  window.MidiFurAlles = window.MidiFurAlles || MidiFurAlles
+  module.exports = MidiFurAlles
+
+})(
+  typeof window !== 'undefined' ? window : {},
+  typeof module !== 'undefined' ? module : {}
+)
