@@ -6,7 +6,7 @@
 		
 		// simple event emitter
 		return {
-			once: (type, fn) => {
+			once(type, fn) {
 				if (!stack[type]) {
 					stack[type] = [];
 				}
@@ -15,18 +15,18 @@
 					observer.off(type, fn);
 				});
 			},
-			on: (type, fn) => {
+			on(type, fn) {
 				if (!stack[type]) {
 					stack[type] = [];
 				}
 				stack[type].unshift(fn);
 			},
-			off: (type, fn) => {
+			off(type, fn) {
 				if (!stack[type]) return;
 				let i = stack[type].indexOf(fn);
 				stack[type].splice(i,1);
 			},
-			emit: (type, detail) => {
+			emit(type, detail) {
 				if (!stack[type]) return;
 				let event = {
 						type         : type,
@@ -66,7 +66,7 @@
 	const AudioContext = window.AudioContext || window.webkitAudioContext
 
 	class MidiFurAlles {
-		constructor (options) {
+		constructor(options) {
 			this.destroyed = false
 
 			this._options = {
@@ -88,8 +88,9 @@
 			this._currentUrlOrBuf = null // currently loading url or buf
 			this._interval = null
 
-			// attach observer listener
+			// attach observer listeners
 			this.on = observer.on;
+			this.off = observer.off;
 
 			this._startInterval = this._startInterval.bind(this)
 			this._stopInterval = this._stopInterval.bind(this)
@@ -107,7 +108,7 @@
 			})
 		}
 
-		_onLibReady () {
+		_onLibReady() {
 			this._lib.FS.writeFile('/timidity.cfg', CFG)
 
 			const result = this._lib._mid_init('/timidity.cfg')
@@ -121,7 +122,7 @@
 			observer.emit('_ready')
 		}
 
-		async load (urlOrBuf) {
+		async load(urlOrBuf) {
 			if (this.destroyed) throw new Error('load() called after destroy()')
 
 			// resume AudioContext
@@ -186,7 +187,7 @@
 			this._lib._mid_song_start(this._songPtr)
 		}
 
-		_getMissingInstruments (songPtr, missingCount) {
+		_getMissingInstruments(songPtr, missingCount) {
 			const missingInstruments = []
 			for (let i = 0; i < missingCount; i++) {
 				const instrumentPtr = this._lib._mid_get_load_request(songPtr, i)
@@ -196,7 +197,7 @@
 			return missingInstruments
 		}
 
-		_loadSong (midiBuf) {
+		_loadSong(midiBuf) {
 			const optsPtr = this._lib._mid_alloc_options(
 				SAMPLE_RATE,
 				AUDIO_FORMAT,
@@ -226,7 +227,7 @@
 			return songPtr
 		}
 
-		async _fetchInstrument (instrument) {
+		async _fetchInstrument(instrument) {
 			if (this._pendingFetches[instrument]) {
 				// If this instrument is already in the process of being fetched, return
 				// the existing promise to prevent duplicate fetches.
@@ -245,7 +246,7 @@
 			return buf
 		}
 
-		_writeInstrumentFile (instrument, buf) {
+		_writeInstrumentFile(instrument, buf) {
 			const folderPath = instrument
 				.split('/')
 				.slice(0, -1) // remove basename
@@ -254,7 +255,7 @@
 			this._lib.FS.writeFile(instrument, buf, { encoding: 'binary' })
 		}
 
-		_mkdirp (folderPath) {
+		_mkdirp(folderPath) {
 			const pathParts = folderPath.split('/')
 			let dirPath = '/'
 			for (let i = 0; i < pathParts.length; i++) {
@@ -266,7 +267,7 @@
 			}
 		}
 
-		async _fetch (url) {
+		async _fetch(url) {
 			const opts = {
 				mode: 'cors',
 				credentials: 'same-origin'
@@ -279,7 +280,7 @@
 			return buf
 		}
 
-		play () {
+		play() {
 			if (this.destroyed) throw new Error('play() called after destroy()')
 
 			// resume AudioContext
@@ -292,7 +293,7 @@
 			}
 		}
 
-		_onAudioProcess (event) {
+		_onAudioProcess(event) {
 			const sampleCount = (this._songPtr && this._playing) ? this._readMidiData() : 0
 
 			if (sampleCount > 0 && this._currentUrlOrBuf) {
@@ -323,7 +324,7 @@
 			}
 		}
 
-		_readMidiData () {
+		_readMidiData() {
 			const byteCount = this._lib._mid_song_read_wave(
 				this._songPtr,
 				this._bufferPtr,
@@ -343,7 +344,7 @@
 			return sampleCount
 		}
 
-		pause () {
+		pause() {
 			if (this.destroyed) throw new Error('pause() called after destroy()')
 
 			this._playing = false
@@ -351,7 +352,7 @@
 			observer.emit('paused')
 		}
 
-		seek (time) {
+		seek(time) {
 			if (this.destroyed) throw new Error('seek() called after destroy()')
 			if (!this._songPtr) return // ignore seek if there is no song loaded yet
 
@@ -360,12 +361,12 @@
 			this._onTimeupdate()
 		}
 
-		get currentTime () {
+		get currentTime() {
 			if (this.destroyed || !this._songPtr) return 0
 			return this._lib._mid_song_get_time(this._songPtr) / 1000
 		}
 
-		get duration () {
+		get duration() {
 			if (this.destroyed || !this._songPtr) return 1
 			return this._lib._mid_song_get_total_time(this._songPtr) / 1000
 		}
@@ -374,27 +375,27 @@
 		 * This event fires when the time indicated by the `currentTime` property
 		 * has been updated.
 		 */
-		_onTimeupdate () {
+		_onTimeupdate() {
 			observer.emit('timeupdate', this.currentTime)
 		}
 
-		_startInterval () {
+		_startInterval() {
 			this._onTimeupdate()
 			this._interval = setInterval(() => this._onTimeupdate(), 1000)
 		}
 
-		_stopInterval () {
+		_stopInterval() {
 			this._onTimeupdate()
 			clearInterval(this._interval)
 			this._interval = null
 		}
 
-		destroy () {
+		destroy() {
 			if (this.destroyed) throw new Error('destroy() called after destroy()')
 			this._destroy()
 		}
 
-		_destroy (err) {
+		_destroy(err) {
 			if (this.destroyed) return
 			this.destroyed = true
 
@@ -423,7 +424,7 @@
 			if (err) observer.emit('error', err)
 		}
 
-		_destroySong () {
+		_destroySong() {
 			this._lib._mid_song_free(this._songPtr)
 			this._songPtr = 0
 		}
